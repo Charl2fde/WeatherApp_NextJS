@@ -1,5 +1,7 @@
 import Head from 'next/head'
 import CardWithImage from '@/components/card'
+import WeekCards from '@/components/weekCards/weekCards'
+import styles from '../styles/index.module.css'
 
 export default function Home() {
   return (
@@ -11,7 +13,16 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        <CardWithImage></CardWithImage>
+        <section className={styles.entirePage}>
+          <section className={styles.infoSquare}>
+            <section className={styles.partLeft}>
+
+            </section>
+            <section className={styles.partRight}>
+              <CardWithImage></CardWithImage>
+            </section>
+          </section>
+        </section>
       </main>
     </>
   )

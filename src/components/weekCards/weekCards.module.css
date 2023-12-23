@@ -1,0 +1,9 @@
+/* WeekCards.module.css */
+
+.weekCards {
+    background-color: #ffffff;
+    border-radius: 20px;
+    text-align: center;
+    height: 250px;
+    width: 100px;
+}
