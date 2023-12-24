@@ -1,5 +1,6 @@
 import Head from 'next/head'
 import CardWithImage from '@/components/card'
+import CurrentWeatherCard from '@/components/cardToday'
 import styles from '../styles/index.module.css'
 
 
@@ -17,7 +18,7 @@ export default function Home() {
         <section className={styles.entirePage}>
           <section className={styles.infoSquare}>
             <section className={styles.partLeft}>
-
+              <CurrentWeatherCard></CurrentWeatherCard>
             </section>
             <section className={styles.partRight}>
               <CardWithImage></CardWithImage>

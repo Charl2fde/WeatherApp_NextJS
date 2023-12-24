@@ -29,9 +29,9 @@ export default function Home() {
 
       if (response.ok) {
         const data = await response.json();
-        // Filtrer pour obtenir un enregistrement par jour
-        const dailyData = filterDailyData(data.list);
-        setWeatherData(dailyData);
+        // Filtrer pour obtenir les données des 7 prochains jours
+        const next7DaysData = filterNext7DaysData(data.list);
+        setWeatherData(next7DaysData);
         // Appeler la fonction pour obtenir les données supplémentaires
         getAdditionalData();
       } else {
@@ -62,16 +62,21 @@ export default function Home() {
     }
   };
 
-  // Fonction pour filtrer les données pour obtenir un enregistrement par jour
-  const filterDailyData = (list) => {
-    const dailyData = {};
-    list.forEach((forecast) => {
-      const date = forecast.dt_txt.split(' ')[0]; // Récupérer la date
-      if (!dailyData[date]) {
-        dailyData[date] = forecast;
-      }
+  const filterNext7DaysData = (list) => {
+    const currentDate = new Date();
+    const tomorrow = new Date(currentDate);
+    tomorrow.setDate(currentDate.getDate() + 1); // Date de demain pour exclure aujourd'hui
+    const next7DaysData = list.filter((forecast) => {
+      const forecastDate = new Date(forecast.dt_txt);
+      return forecastDate >= tomorrow && forecastDate <= getFutureDate(currentDate, 7);
     });
-    return Object.values(dailyData);
+    return next7DaysData.reduce((acc, forecast) => {
+      const date = forecast.dt_txt.split(' ')[0];
+      if (!acc[date]) {
+        acc[date] = forecast;
+      }
+      return acc;
+    }, {});
   };
 
   const getWeatherIcon = (weather, iconProps) => {
@@ -87,6 +92,13 @@ export default function Home() {
       default:
         return null;
     }
+  };
+
+  // Fonction utilitaire pour obtenir la date dans le futur
+  const getFutureDate = (date, days) => {
+    const futureDate = new Date(date);
+    futureDate.setDate(date.getDate() + days);
+    return futureDate;
   };
 
   return (
@@ -120,74 +132,75 @@ export default function Home() {
       </Flex>
 
       {weatherData && (
-        <Flex direction="row" wrap="wrap" mt={8} p="4" overflowX="auto">
-          {weatherData.slice(0, 7).map((forecast) => (
-            <Box key={forecast.dt} mb={4} flex="1" minWidth="150px" mx={2}>
-              <Card boxShadow="none" bg="white" border="none" borderRadius="20px">
-                <CardBody>
-                  <Box display="flex" alignItems="center" justifyContent="center" height="80px">
-                    {getWeatherIcon(forecast.weather[0].main, { size: '6em' })}
-                  </Box>
-
-                  <Stack mt="6" spacing="3">
-                    <Heading size="md">{forecast.dt_txt}</Heading>
-                    <Text>{forecast.weather[0].description}</Text>
-                    <Text color="blue.600" fontSize="2xl">
-                      {forecast.main.temp}°C
-                    </Text>
-                  </Stack>
-                </CardBody>
-              </Card>
+  <Flex flexWrap="wrap" mt={8} justifyContent="space-between">
+    {Object.values(weatherData).map((forecast, index) => (
+      <Box key={index} width={['100%', 'calc(20% - 8px)', 'calc(20% - 8px)', 'calc(20% - 8px)', 'calc(20% - 8px)']} mb={6}>
+        <Card boxShadow="none" bg="white" border="none" borderRadius="20px">
+          <CardBody textAlign="center">
+            <Box display="flex" alignItems="center" justifyContent="center" height="60px">
+              {getWeatherIcon(forecast.weather[0].main, { size: '4em' })}
             </Box>
-          ))}
-        </Flex>
-      )}
+            <Stack mt="4" spacing="2">
+              <Heading size="sm">{new Date(forecast.dt_txt).toLocaleDateString()}</Heading>
+              <Text>{forecast.weather[0].description}</Text>
+              <Text color="blue.600" fontSize="lg">{forecast.main.temp}°C</Text>
+            </Stack>
+          </CardBody>
+        </Card>
+      </Box>
+    ))}
+  </Flex>
+)}
+
+
+
+
 
 
 {additionalData && (
-  <SimpleGrid columns={[2, 3]} spacing="5px" mt="2px" p="4px">
-    <Card colSpan={[2, 1]} borderRadius="20px" height="180px" margin="10px">
+  <SimpleGrid columns={[2, 3]} spacing="10px" mt="2" p="4">
+    <Card colSpan={[2, 1]} borderRadius="12px" height="120px" margin="5px">
       <CardBody textAlign="center">
-        <Heading size="2xl">{additionalData?.name}</Heading>
+        <Heading size="lg">{additionalData?.name}</Heading>
       </CardBody>
     </Card>
 
-    <Card colSpan={1} borderRadius="20px" height="180px" margin="10px">
+    <Card colSpan={1} borderRadius="12px" height="120px" margin="5px">
       <CardBody textAlign="center">
-        <Heading size="md">Vitesse du vent</Heading>
-        <Text color="blue.600" fontSize="2xl">{additionalData?.wind.speed} km/h</Text>
+        <Heading size="sm">Vitesse du vent</Heading>
+        <Text color="blue.600" fontSize="lg">{additionalData?.wind.speed} km/h</Text>
       </CardBody>
     </Card>
 
-    <Card colSpan={1} borderRadius="20px" height="180px" margin="10px">
+    <Card colSpan={1} borderRadius="12px" height="120px" margin="5px">
       <CardBody textAlign="center">
-        <Heading size="md">Couché et Levé du soleil</Heading>
-        <Text color="blue.600" fontSize="2xl">Couché : {new Date(additionalData?.sys.sunset * 1000).toLocaleTimeString()}</Text>
-        <Text color="blue.600" fontSize="2xl">Levé : {new Date(additionalData?.sys.sunrise * 1000).toLocaleTimeString()}</Text>
+        <Heading size="sm">Couché et Levé du soleil</Heading>
+        <Text color="blue.600" fontSize="lg">Couché : {new Date(additionalData?.sys.sunset * 1000).toLocaleTimeString()}</Text>
+        <Text color="blue.600" fontSize="lg">Levé : {new Date(additionalData?.sys.sunrise * 1000).toLocaleTimeString()}</Text>
       </CardBody>
     </Card>
 
-    <Card colSpan={1} borderRadius="20px" height="180px" margin="10px">
+    <Card colSpan={1} borderRadius="12px" height="120px" margin="5px">
       <CardBody textAlign="center">
-        <Heading size="md">Taux d'humidité</Heading>
-        <Text color="blue.600" fontSize="2xl">{additionalData?.main.humidity}%</Text>
+        <Heading size="sm">Taux d'humidité</Heading>
+        <Text color="blue.600" fontSize="lg">{additionalData?.main.humidity}%</Text>
       </CardBody>
     </Card>
 
-    <Card colSpan={1} borderRadius="20px" height="180px" margin="10px">
+    <Card colSpan={1} borderRadius="12px" height="120px" margin="5px">
       <CardBody textAlign="center">
-        <Heading size="md">Température Min/Max</Heading>
-        <Text color="blue.600" fontSize="2xl">
+        <Heading size="sm">Température Min/Max</Heading>
+        <Text color="blue.600" fontSize="lg">
           Min : {additionalData?.main.temp_min}°C<br />
           Max : {additionalData?.main.temp_max}°C
         </Text>
       </CardBody>
     </Card>
 
-    <Card colSpan={1} borderRadius="20px" height="180px" margin="10px">
+    <Card colSpan={1} borderRadius="12px" height="120px" margin="5px">
       <CardBody textAlign="center">
-        <Heading size="md">Visibilité</Heading>
-        <Text color="blue.600" fontSize="2xl">{additionalData?.visibility / 1000} km</Text>
+        <Heading size="sm">Visibilité</Heading>
+        <Text color="blue.600" fontSize="lg">{additionalData?.visibility / 1000} km</Text>
       </CardBody>
     </Card>
   </SimpleGrid>
