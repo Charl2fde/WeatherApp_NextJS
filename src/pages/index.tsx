@@ -1,7 +1,8 @@
 import Head from 'next/head'
 import CardWithImage from '@/components/card'
-import WeekCards from '@/components/weekCards/weekCards'
 import styles from '../styles/index.module.css'
+
+
 
 export default function Home() {
   return (
@@ -20,6 +21,8 @@ export default function Home() {
             </section>
             <section className={styles.partRight}>
               <CardWithImage></CardWithImage>
+              <div className={styles.weekCardsContainer}>
+              </div>
             </section>
           </section>
         </section>

@@ -24,6 +24,17 @@
   border-bottom-right-radius: 20px;
 }
 
+.weekCardsContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  margin-top: 8px;
+  padding: 4px;
+  overflow-x: auto;
+  margin: 0 16px;
+}
+
 /*
 .description {
   display: inherit;
