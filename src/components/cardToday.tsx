@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Card, CardBody, Heading, Text } from '@chakra-ui/react';
-import { WiDaySunny, WiCloudy, WiRain, WiSnow } from 'react-icons/wi';
+import { Box, Heading, Text } from '@chakra-ui/react';
+import { Card, CardBody } from '@chakra-ui/react';
 
-const API_KEY = '6b1d5ecb1b816eb86b1b035afb017936'; // Remplacez par votre clé API
+const API_KEY = '6b1d5ecb1b816eb86b1b035afb017936';
 
 const CurrentWeatherCard = ({ city }) => {
   const [weatherData, setWeatherData] = useState(null);
@@ -30,23 +30,8 @@ const CurrentWeatherCard = ({ city }) => {
     }
   }, [city]);
 
-  const getWeatherIcon = (weather, iconProps) => {
-    switch (weather) {
-      case 'Clear':
-        return <WiDaySunny {...iconProps} />;
-      case 'Clouds':
-        return <WiCloudy {...iconProps} />;
-      case 'Rain':
-        return <WiRain {...iconProps} />;
-      case 'Snow':
-        return <WiSnow {...iconProps} />;
-      default:
-        return null;
-    }
-  };
-
   if (!weatherData) {
-    return null; // Retourne null si les données ne sont pas disponibles
+    return null;
   }
 
   return (
@@ -54,7 +39,6 @@ const CurrentWeatherCard = ({ city }) => {
       <Card boxShadow="none" bg="white" border="none" borderRadius="20px">
         <CardBody textAlign="center">
           <Box display="flex" alignItems="center" justifyContent="center" height="60px">
-            {/* Utilisez getWeatherIcon pour obtenir l'icône météo */}
             {getWeatherIcon(weatherData.weather[0].main, { size: '4em' })}
           </Box>
           <Heading size="sm">{new Date().toLocaleDateString()}</Heading>

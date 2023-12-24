@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { JSX, useState } from 'react';
 import {
   Flex,
   Input,
@@ -6,15 +6,17 @@ import {
   Text,
   Box,
   Spacer,
-  Card,
-  CardBody,
-  Stack,
-  Heading,
   SimpleGrid,
 } from '@chakra-ui/react';
 import { WiDaySunny, WiCloudy, WiRain, WiSnow } from 'react-icons/wi';
+import CurrentWeatherCard from './cardToday'; // Importer cardToday
+import { Card, CardBody } from '@chakra-ui/react';
+import { Stack } from '@chakra-ui/react';
+import { Heading } from '@chakra-ui/react';
 
-const API_KEY = '6b1d5ecb1b816eb86b1b035afb017936';
+
+
+const API_KEY = '6b1d5ecb1b816eb86b1b035afb017936'; // Remplacez par votre clé API
 
 export default function Home() {
   const [city, setCity] = useState('');
@@ -29,10 +31,8 @@ export default function Home() {
 
       if (response.ok) {
         const data = await response.json();
-        // Filtrer pour obtenir les données des 7 prochains jours
         const next7DaysData = filterNext7DaysData(data.list);
         setWeatherData(next7DaysData);
-        // Appeler la fonction pour obtenir les données supplémentaires
         getAdditionalData();
       } else {
         setWeatherData(null);
@@ -41,6 +41,21 @@ export default function Home() {
       }
     } catch (error) {
       console.error('Erreur réseau :', error);
+    }
+  };
+
+  const getWeatherIcon = (weather: any, iconProps: JSX.IntrinsicAttributes) => {
+    switch (weather) {
+      case 'Clear':
+        return <WiDaySunny {...iconProps} />;
+      case 'Clouds':
+        return <WiCloudy {...iconProps} />;
+      case 'Rain':
+        return <WiRain {...iconProps} />;
+      case 'Snow':
+        return <WiSnow {...iconProps} />;
+      default:
+        return null;
     }
   };
 
@@ -62,7 +77,7 @@ export default function Home() {
     }
   };
 
-  const filterNext7DaysData = (list) => {
+  const filterNext7DaysData = (list: any[]) => {
     const currentDate = new Date();
     const tomorrow = new Date(currentDate);
     tomorrow.setDate(currentDate.getDate() + 1); // Date de demain pour exclure aujourd'hui
@@ -79,27 +94,13 @@ export default function Home() {
     }, {});
   };
 
-  const getWeatherIcon = (weather, iconProps) => {
-    switch (weather) {
-      case 'Clear':
-        return <WiDaySunny {...iconProps} />;
-      case 'Clouds':
-        return <WiCloudy {...iconProps} />;
-      case 'Rain':
-        return <WiRain {...iconProps} />;
-      case 'Snow':
-        return <WiSnow {...iconProps} />;
-      default:
-        return null;
-    }
-  };
-
-  // Fonction utilitaire pour obtenir la date dans le futur
-  const getFutureDate = (date, days) => {
+  const getFutureDate = (date: string | number | Date, days: number) => {
     const futureDate = new Date(date);
     futureDate.setDate(date.getDate() + days);
     return futureDate;
   };
+
+
 
   return (
     <Box>
@@ -152,12 +153,7 @@ export default function Home() {
   </Flex>
 )}
 
-
-
-
-
-
-{additionalData && (
+      {additionalData && (
   <SimpleGrid columns={[2, 3]} spacing="10px" mt="2" p="4">
     <Card colSpan={[2, 1]} borderRadius="12px" height="120px" margin="5px">
       <CardBody textAlign="center">

@@ -3,8 +3,6 @@ import CardWithImage from '@/components/card'
 import CurrentWeatherCard from '@/components/cardToday'
 import styles from '../styles/index.module.css'
 
-
-
 export default function Home() {
   return (
     <>
