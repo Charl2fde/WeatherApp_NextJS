@@ -1,11 +1,28 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Heading, Text } from '@chakra-ui/react';
+import { Box, Heading, Text, useBreakpointValue } from '@chakra-ui/react';
 import { Card, CardBody } from '@chakra-ui/react';
+import { WiDaySunny, WiCloudy, WiRain, WiSnow } from 'react-icons/wi';
 
 const API_KEY = '6b1d5ecb1b816eb86b1b035afb017936';
 
+const getWeatherIcon = (weatherType) => {
+  const iconSize = useBreakpointValue({ base: '2em', md: '3em', lg: '4em' });
+  switch (weatherType) {
+  case 'Clear':
+      return <WiDaySunny size={iconSize} />;
+  case 'Clouds':
+      return <WiCloudy size={iconSize} />;
+  case 'Rain':
+      return <WiRain size={iconSize} />;
+  case 'Snow':
+      return <WiSnow size={iconSize} />;
+  default:
+      return <Box />;
+  }
+  };
+
 const CurrentWeatherCard = ({ city }) => {
-  const [weatherData, setWeatherData] = useState(null);
+const [weatherData, setWeatherData] = useState(null);
 
   useEffect(() => {
     const fetchWeatherData = async () => {
@@ -34,14 +51,16 @@ const CurrentWeatherCard = ({ city }) => {
     return null;
   }
 
+  const cardWidth = useBreakpointValue({ base: '100%', sm: 'calc(50% - 8px)', md: 'calc(33.333% - 8px)', lg: 'calc(25% - 8px)' });
+  const fontSize = useBreakpointValue({ base: 'md', md: 'lg', lg: 'xl' });
   return (
-    <Box width={['100%', 'calc(50% - 8px)', 'calc(33.333% - 8px)', 'calc(25% - 8px)']} mb={6}>
+    <Box  width={cardWidth} mb={6}>
       <Card boxShadow="none" bg="white" border="none" borderRadius="20px">
         <CardBody textAlign="center">
           <Box display="flex" alignItems="center" justifyContent="center" height="60px">
-            {getWeatherIcon(weatherData.weather[0].main, { size: '4em' })}
+            {getWeatherIcon(weatherData.weather[0].main)}
           </Box>
-          <Heading size="sm">{new Date().toLocaleDateString()}</Heading>
+          <Heading size="sm">{new Date(weatherData.dt * 1000).toLocaleDateString()}</Heading>
           <Text>{weatherData.weather[0].description}</Text>
           <Text color="blue.600" fontSize="lg">{weatherData.main.temp}°C</Text>
         </CardBody>

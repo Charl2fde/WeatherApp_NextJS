@@ -7,6 +7,7 @@ import {
   Box,
   Spacer,
   SimpleGrid,
+  useBreakpointValue,
 } from '@chakra-ui/react';
 import { WiDaySunny, WiCloudy, WiRain, WiSnow } from 'react-icons/wi';
 import { Card, CardBody } from '@chakra-ui/react';
@@ -102,6 +103,8 @@ export default function Home() {
     handleSearch(); // Affichage par défaut pour la ville de Paris au chargement initial
   }, []); // Le tableau vide en tant que dépendance signifie que cela ne s'exécutera qu'une seule fois au montage
 
+  const iconSize = useBreakpointValue({ base: '2em', md: '3em', lg: '4em' });
+  const inputWidth = useBreakpointValue({ base: '100%', md: '300px' }); 
   return (
     <Box>
       <Flex
@@ -125,13 +128,13 @@ export default function Home() {
           value={city}
           onChange={(e) => setCity(e.target.value)}
           mr="2"
-          w="300px"
+          w={inputWidth}
+          mb={{ base: 4, md: 2 }}
         />
         <Button colorScheme="blue" onClick={handleSearch}>
           Rechercher
         </Button>
       </Flex>
-
       {weatherData && (
         <Flex flexWrap="wrap" mt={8} justifyContent="space-between">
           {Object.values(weatherData).map((forecast, index) => (
@@ -151,6 +154,7 @@ export default function Home() {
             </Box>
           ))}
         </Flex>
+        
       )}
 
       {additionalData && (
@@ -168,39 +172,45 @@ export default function Home() {
             </CardBody>
           </Card>
 
+        <Card colSpan={1} borderRadius="12px" height="120px" margin="5px">
+          <CardBody textAlign="center">
+            <Heading size="sm">Couché et Levé du soleil</Heading>
+            <Text color="blue.600" fontSize="lg">
+              Levé : {new Date(additionalData.sys.sunrise * 1000).toLocaleTimeString()}
+            </Text>
+            <Text color="blue.600" fontSize="lg">
+              Couché : {new Date(additionalData.sys.sunset * 1000).toLocaleTimeString()}
+            </Text>
+          </CardBody>
+      </Card>
           <Card colSpan={1} borderRadius="12px" height="120px" margin="5px">
-            <CardBody textAlign="center">
-              <Heading size="sm">Couché et Levé du soleil</Heading>
-              <Text color="blue.600" fontSize="lg">Couché : {new Date(additionalData?.sys.sunset * 1000).toLocaleTimeString()}</Text>
-              <Text color="blue.600" fontSize="lg">Levé : {new Date(additionalData?.sys.sunrise * 1000).toLocaleTimeString()}</Text>
-            </CardBody>
-          </Card>
+          <CardBody textAlign="center">
+            <Heading size="sm">Taux d'humidité</Heading>
+            <Text color="blue.600" fontSize="lg">{additionalData.main.humidity}%</Text>
+          </CardBody>
+        </Card>
 
-          <Card colSpan={1} borderRadius="12px" height="120px" margin="5px">
-            <CardBody textAlign="center">
-              <Heading size="sm">Taux d'humidité</Heading>
-              <Text color="blue.600" fontSize="lg">{additionalData?.main.humidity}%</Text>
-            </CardBody>
-          </Card>
 
-          <Card colSpan={1} borderRadius="12px" height="120px" margin="5px">
-            <CardBody textAlign="center">
-              <Heading size="sm">Température Min/Max</Heading>
-              <Text color="blue.600" fontSize="lg">
-                Min : {additionalData?.main.temp_min}°C<br />
-                Max : {additionalData?.main.temp_max}°C
-              </Text>
-            </CardBody>
-          </Card>
+    <Card colSpan={1} borderRadius="12px" height="120px" margin="5px">
+      <CardBody textAlign="center">
+        <Heading size="sm">Température Min/Max</Heading>
+        <Text color="blue.600" fontSize="lg">
+          Min : {additionalData.main.temp_min}°C
+        </Text>
+        <Text color="blue.600" fontSize="lg">
+          Max : {additionalData.main.temp_max}°C
+        </Text>
+      </CardBody>
+    </Card>
 
-          <Card colSpan={1} borderRadius="12px" height="120px" margin="5px">
-            <CardBody textAlign="center">
-              <Heading size="sm">Visibilité</Heading>
-              <Text color="blue.600" fontSize="lg">{additionalData?.visibility / 1000} km</Text>
-            </CardBody>
-          </Card>
-        </SimpleGrid>
-      )}
+    <Card colSpan={1} borderRadius="12px" height="120px" margin="5px">
+      <CardBody textAlign="center">
+        <Heading size="sm">Visibilité</Heading>
+        <Text color="blue.600" fontSize="lg">{additionalData.visibility / 1000} km</Text>
+      </CardBody>
+    </Card>
+    </SimpleGrid>
+    )}
     </Box>
   );
 }
