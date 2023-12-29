@@ -1,19 +1,20 @@
 import { useState, useEffect } from 'react';
 import {
-  Flex,
-  Input,
-  Button,
-  Text,
   Box,
-  Spacer,
+  Button,
+  Flex,
+  Heading,
+  Input,
   SimpleGrid,
+  Spacer,
+  Stack,
+  Text,
 } from '@chakra-ui/react';
 import { WiDaySunny, WiCloudy, WiRain, WiSnow } from 'react-icons/wi';
 import { Card, CardBody } from '@chakra-ui/react';
-import { Stack } from '@chakra-ui/react';
-import { Heading } from '@chakra-ui/react';
+import CurrentWeatherCard from '../components/cardToday';
 
-const API_KEY = '6b1d5ecb1b816eb86b1b035afb017936'; // Remplacez par votre clé API
+const API_KEY = '6b1d5ecb1b816eb86b1b035afb017936';
 
 export default function Home() {
   const [city, setCity] = useState('');
@@ -22,36 +23,56 @@ export default function Home() {
 
   const handleSearch = async () => {
     try {
-      const searchCity = city || 'Paris'; // Utilisez Paris par défaut si la barre de recherche est vide
+      const searchCity = city || 'Paris';
       const response = await fetch(
         `https://api.openweathermap.org/data/2.5/forecast?q=${searchCity}&appid=${API_KEY}&units=metric`
       );
-
+  
       if (response.ok) {
         const data = await response.json();
-        const next7DaysData = filterNext7DaysData(data.list);
-        setWeatherData(next7DaysData);
+        const next5DaysData = filterNext5DaysData(data.list); 
+        setWeatherData(next5DaysData);
         getAdditionalData(searchCity);
       } else {
         setWeatherData(null);
         setAdditionalData(null);
-        console.error('Erreur lors de la récupération des données météorologiques');
+        console.error('Error fetching weather data');
       }
     } catch (error) {
-      console.error('Erreur réseau :', error);
+      console.error('Network error:', error);
     }
+  };
+  
+  const filterNext5DaysData = (list) => {
+    const currentDate = new Date();
+    const tomorrow = new Date(currentDate);
+    tomorrow.setDate(currentDate.getDate() + 1);
+    const next5DaysData = list.filter((forecast) => {
+      const forecastDate = new Date(forecast.dt_txt);
+      return (
+        forecastDate >= tomorrow &&
+        forecastDate <= getFutureDate(currentDate, 7) 
+      );
+    });
+    return next5DaysData.reduce((acc, forecast) => {
+      const date = forecast.dt_txt.split(' ')[0];
+      if (!acc[date]) {
+        acc[date] = forecast;
+      }
+      return acc;
+    }, {});
   };
 
   const getWeatherIcon = (weather, iconProps) => {
     switch (weather) {
       case 'Clear':
-        return <WiDaySunny {...iconProps} />;
+        return <WiDaySunny {...iconProps} style={{ color: 'yellow' }} />;
       case 'Clouds':
-        return <WiCloudy {...iconProps} />;
+        return <WiCloudy {...iconProps} style={{ color: 'gray' }} />;
       case 'Rain':
-        return <WiRain {...iconProps} />;
+        return <WiRain {...iconProps} style={{ color: 'blue' }} />;
       case 'Snow':
-        return <WiSnow {...iconProps} />;
+        return <WiSnow {...iconProps} style={{ color: 'white' }} />;
       default:
         return null;
     }
@@ -68,29 +89,14 @@ export default function Home() {
         setAdditionalData(data);
       } else {
         setAdditionalData(null);
-        console.error('Erreur lors de la récupération des données supplémentaires');
+        console.error('Error fetching additional data');
       }
     } catch (error) {
-      console.error('Erreur réseau :', error);
+      console.error('Network error:', error);
     }
   };
 
-  const filterNext7DaysData = (list) => {
-    const currentDate = new Date();
-    const tomorrow = new Date(currentDate);
-    tomorrow.setDate(currentDate.getDate() + 1); // Date de demain pour exclure aujourd'hui
-    const next7DaysData = list.filter((forecast) => {
-      const forecastDate = new Date(forecast.dt_txt);
-      return forecastDate >= tomorrow && forecastDate <= getFutureDate(currentDate, 7);
-    });
-    return next7DaysData.reduce((acc, forecast) => {
-      const date = forecast.dt_txt.split(' ')[0];
-      if (!acc[date]) {
-        acc[date] = forecast;
-      }
-      return acc;
-    }, {});
-  };
+
 
   const getFutureDate = (date, days) => {
     const futureDate = new Date(date);
@@ -99,8 +105,8 @@ export default function Home() {
   };
 
   useEffect(() => {
-    handleSearch(); // Affichage par défaut pour la ville de Paris au chargement initial
-  }, []); // Le tableau vide en tant que dépendance signifie que cela ne s'exécutera qu'une seule fois au montage
+    handleSearch();
+  }, []); 
 
   return (
     <Box>
@@ -119,7 +125,6 @@ export default function Home() {
         </Flex>
         <Spacer />
         <Input
-          color='teal'
           placeholder='Entrez le nom de la ville'
           _placeholder={{ color: 'inherit' }}
           value={city}
@@ -153,7 +158,7 @@ export default function Home() {
         </Flex>
       )}
 
-      {additionalData && (
+      {weatherData && (
         <SimpleGrid columns={[2, 3]} spacing="10px" mt="2" p="4">
           <Card colSpan={[2, 1]} borderRadius="12px" height="120px" margin="5px">
             <CardBody textAlign="center">
@@ -193,14 +198,28 @@ export default function Home() {
             </CardBody>
           </Card>
 
-          <Card colSpan={1} borderRadius="12px" height="120px" margin="5px">
-            <CardBody textAlign="center">
-              <Heading size="sm">Visibilité</Heading>
-              <Text color="blue.600" fontSize="lg">{additionalData?.visibility / 1000} km</Text>
-            </CardBody>
-          </Card>
+          <Card colSpan={1}>
+  <CardBody textAlign="center">
+    {additionalData && additionalData.coord && (
+      <iframe
+        title="City Map"
+        width="auto"
+        height="auto"
+        style={{ border: 0 }}
+        src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyDzBAAaI8Og5jCA3-fwmpsYAYNHVXtI-PU&q=${additionalData.coord.lat},${additionalData.coord.lon}`}
+      ></iframe>
+    )}
+  </CardBody>
+</Card>
+
+          
         </SimpleGrid>
+        
       )}
+      <Box mt={8}>
+        <CurrentWeatherCard weatherData={weatherData} />
+      </Box>
     </Box>
+    
   );
 }

@@ -24,6 +24,15 @@
   border-bottom-right-radius: 20px;
 }
 
+.partLeft {
+  margin-right: auto;
+  background-color: rgb(255, 255, 255);
+  height: 100%;
+  width: 30%;
+  border-top-left-radius: 20px;
+  border-bottom-left-radius: 20px;
+}
+
 .weekCardsContainer {
   display: flex;
   flex-direction: row;
