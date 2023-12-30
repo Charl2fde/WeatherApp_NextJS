@@ -1,4 +1,5 @@
 import { useState, useEffect, JSX } from 'react';
+import { WiDaySunny, WiCloudy, WiRain, WiSnow } from 'react-icons/wi';
 import {
   Box,
   Button,
@@ -10,7 +11,6 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react';
-import { WiDaySunny, WiCloudy, WiRain, WiSnow } from 'react-icons/wi';
 import { Card, CardBody } from '@chakra-ui/react';
 import CurrentWeatherCard from '../components/cardToday';
 
