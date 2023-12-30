@@ -158,7 +158,7 @@ export default function Home() {
         </Flex>
       )}
 
-      {weatherData && (
+      {additionalData && (
         <SimpleGrid columns={[2, 3]} spacing="10px" mt="2" p="4">
             <Card borderRadius="12px" height="120px" margin="5px">
             <CardBody textAlign="center">
@@ -170,7 +170,7 @@ export default function Home() {
             <CardBody textAlign="center">
               <Heading size="sm">Vitesse du vent</Heading>
               <Text color="blue.600" fontSize="lg">
-                {additionalData?.wind?.Speed} km/h
+              {(additionalData as any).main?.temp} km/h
               </Text>
             </CardBody>
           </Card>
@@ -178,15 +178,15 @@ export default function Home() {
             <Card borderRadius="12px" height="120px" margin="5px">
             <CardBody textAlign="center">
               <Heading size="sm">Couché et Levé du soleil</Heading>
-              <Text color="blue.600" fontSize="lg">Couché : {new Date(additionalData?.sys.sunset * 1000).toLocaleTimeString()}</Text>
-              <Text color="blue.600" fontSize="lg">Levé : {new Date(additionalData?.sys.sunrise * 1000).toLocaleTimeString()}</Text>
+              <Text color="blue.600" fontSize="lg">Couché : {new Date((additionalData as any).sys.sunset * 1000).toLocaleTimeString()}</Text>
+              <Text color="blue.600" fontSize="lg">Levé : {new Date((additionalData as any).sys.sunrise * 1000).toLocaleTimeString()}</Text>
             </CardBody>
           </Card>
 
             <Card borderRadius="12px" height="120px" margin="5px">
             <CardBody textAlign="center">
               <Heading size="sm">Taux d'humidité</Heading>
-              <Text color="blue.600" fontSize="lg">{additionalData?.main.humidity}%</Text>
+              <Text color="blue.600" fontSize="lg">{(additionalData as any).main.humidity}%</Text>
             </CardBody>
           </Card>
 
@@ -194,21 +194,21 @@ export default function Home() {
             <CardBody textAlign="center">
               <Heading size="sm">Température Min/Max</Heading>
               <Text color="blue.600" fontSize="lg">
-                Min : {additionalData?.main.temp_min}°C<br />
-                Max : {additionalData?.main.temp_max}°C
+                Min : {(additionalData as any).main.temp_min}°C<br />
+                Max : {(additionalData as any).main.temp_max}°C
               </Text>
             </CardBody>
           </Card>
 
             <Card>
   <CardBody textAlign="center">
-    {additionalData && additionalData.coord && (
+    {additionalData && (additionalData as any).coord && (
       <iframe
         title="City Map"
         width="auto"
         height="auto"
         style={{ border: 0 }}
-        src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyDzBAAaI8Og5jCA3-fwmpsYAYNHVXtI-PU&q=${additionalData.coord.lat},${additionalData.coord.lon}`}
+        src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyDzBAAaI8Og5jCA3-fwmpsYAYNHVXtI-PU&q=${(additionalData as any).coord.lat},${(additionalData as any).coord.lon}`}
       ></iframe>
     )}
   </CardBody>
