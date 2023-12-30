@@ -42,7 +42,7 @@ const Home = () => {
         <section className={styles.entirePage}>
           <section className={styles.infoSquare}>
             <section className={styles.partLeft}>
-              <CurrentWeatherCard weatherData={weatherData} />
+              <CurrentWeatherCard weatherData={weatherData} setCity={undefined} />
             </section>
             <section className={styles.partRight}>
               <CardWithImage />
