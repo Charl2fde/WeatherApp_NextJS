@@ -2,7 +2,7 @@ import React from 'react';
 import { Box, Heading, Text } from '@chakra-ui/react';
 import { WiDaySunny, WiCloudy, WiRain, WiSnow } from 'react-icons/wi';
 
-const getWeatherIcon = (weather) => {
+const getWeatherIcon = (weather: any) => {
   switch (weather) {
     case 'Clear':
       return <WiDaySunny size="9em" color="yellow" />;
@@ -17,7 +17,7 @@ const getWeatherIcon = (weather) => {
   }
 };
 
-const CurrentWeatherCard = ({ weatherData, setCity }) => {
+const CurrentWeatherCard = ({ weatherData, setCity }: { weatherData: any, setCity: any }) => {
   if (!weatherData || !weatherData.weather || !weatherData.main || !weatherData.name) {
     return null;
   }

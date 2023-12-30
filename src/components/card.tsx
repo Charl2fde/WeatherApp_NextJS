@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, JSX } from 'react';
 import {
   Box,
   Button,
@@ -43,7 +43,7 @@ export default function Home() {
     }
   };
   
-  const filterNext5DaysData = (list) => {
+  const filterNext5DaysData = (list: any[]) => {
     const currentDate = new Date();
     const tomorrow = new Date(currentDate);
     tomorrow.setDate(currentDate.getDate() + 1);
@@ -63,7 +63,7 @@ export default function Home() {
     }, {});
   };
 
-  const getWeatherIcon = (weather, iconProps) => {
+  const getWeatherIcon = (weather: any, iconProps: any) => {
     switch (weather) {
       case 'Clear':
         return <WiDaySunny {...iconProps} style={{ color: 'yellow' }} />;
@@ -78,7 +78,7 @@ export default function Home() {
     }
   };
 
-  const getAdditionalData = async (searchCity) => {
+  const getAdditionalData = async (searchCity: string) => {
     try {
       const response = await fetch(
         `https://api.openweathermap.org/data/2.5/weather?q=${searchCity}&appid=${API_KEY}&units=metric`
@@ -98,9 +98,9 @@ export default function Home() {
 
 
 
-  const getFutureDate = (date, days) => {
+  const getFutureDate = (date: string | number | Date, days: number) => {
     const futureDate = new Date(date);
-    futureDate.setDate(date.getDate() + days);
+    futureDate.setDate((date as Date).getDate() + days);
     return futureDate;
   };
 
@@ -144,12 +144,12 @@ export default function Home() {
               <Card boxShadow="none" bg="white" border="none" borderRadius="20px">
                 <CardBody textAlign="center">
                   <Box display="flex" alignItems="center" justifyContent="center" height="60px">
-                    {getWeatherIcon(forecast.weather[0].main, { size: '4em' })}
+                    {getWeatherIcon((forecast as any).weather[0].main, { size: '3em' })}
                   </Box>
                   <Stack mt="4" spacing="2">
-                    <Heading size="sm">{new Date(forecast.dt_txt).toLocaleDateString()}</Heading>
-                    <Text>{forecast.weather[0].description}</Text>
-                    <Text color="blue.600" fontSize="lg">{forecast.main.temp}°C</Text>
+                    <Heading size="sm">{(forecast as any).dt_txt && new Date((forecast as any).dt_txt).toLocaleDateString()}</Heading>
+                    <Text>{(forecast as any).weather[0].description}</Text>
+                    <Text color="blue.600" fontSize="lg">{(forecast as any).main.temp}°C</Text>
                   </Stack>
                 </CardBody>
               </Card>
@@ -160,20 +160,22 @@ export default function Home() {
 
       {weatherData && (
         <SimpleGrid columns={[2, 3]} spacing="10px" mt="2" p="4">
-          <Card colSpan={[2, 1]} borderRadius="12px" height="120px" margin="5px">
+            <Card borderRadius="12px" height="120px" margin="5px">
             <CardBody textAlign="center">
-              <Heading size="lg">{additionalData?.name}</Heading>
+              <Heading size="lg">{(additionalData as any)?.name}</Heading>
             </CardBody>
           </Card>
 
-          <Card colSpan={1} borderRadius="12px" height="120px" margin="5px">
+            <Card borderRadius="12px" height="120px" margin="5px">
             <CardBody textAlign="center">
               <Heading size="sm">Vitesse du vent</Heading>
-              <Text color="blue.600" fontSize="lg">{additionalData?.wind.speed} km/h</Text>
+              <Text color="blue.600" fontSize="lg">
+                {additionalData?.wind?.Speed} km/h
+              </Text>
             </CardBody>
           </Card>
 
-          <Card colSpan={1} borderRadius="12px" height="120px" margin="5px">
+            <Card borderRadius="12px" height="120px" margin="5px">
             <CardBody textAlign="center">
               <Heading size="sm">Couché et Levé du soleil</Heading>
               <Text color="blue.600" fontSize="lg">Couché : {new Date(additionalData?.sys.sunset * 1000).toLocaleTimeString()}</Text>
@@ -181,14 +183,14 @@ export default function Home() {
             </CardBody>
           </Card>
 
-          <Card colSpan={1} borderRadius="12px" height="120px" margin="5px">
+            <Card borderRadius="12px" height="120px" margin="5px">
             <CardBody textAlign="center">
               <Heading size="sm">Taux d'humidité</Heading>
               <Text color="blue.600" fontSize="lg">{additionalData?.main.humidity}%</Text>
             </CardBody>
           </Card>
 
-          <Card colSpan={1} borderRadius="12px" height="120px" margin="5px">
+            <Card borderRadius="12px" height="120px" margin="5px">
             <CardBody textAlign="center">
               <Heading size="sm">Température Min/Max</Heading>
               <Text color="blue.600" fontSize="lg">
@@ -198,7 +200,7 @@ export default function Home() {
             </CardBody>
           </Card>
 
-          <Card colSpan={1}>
+            <Card>
   <CardBody textAlign="center">
     {additionalData && additionalData.coord && (
       <iframe
@@ -217,7 +219,7 @@ export default function Home() {
         
       )}
       <Box mt={8}>
-        <CurrentWeatherCard weatherData={weatherData} />
+        <CurrentWeatherCard weatherData={weatherData} setCity={undefined} />
       </Box>
     </Box>
     
