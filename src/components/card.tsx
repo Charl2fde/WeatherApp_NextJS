@@ -108,6 +108,12 @@ export default function Home() {
     handleSearch();
   }, []);
 
+  const handleSetCity = (any : newWeatherData) => {
+    setCity(weatherData.name);
+    setWeatherData(weatherData);
+    
+  };
+
   return (
     <Box>
       <Flex
@@ -145,14 +151,13 @@ export default function Home() {
               <Box key={index} width={['100%', 'calc(20% - 8px)', 'calc(20% - 8px)', 'calc(20% - 8px)', 'calc(20% - 8px)']} mb={6}>
                 <Card boxShadow="none" bg="white" border="none" borderRadius="20px">
                   <CardBody textAlign="center">
-                    <Box display="flex" alignItems="center" justifyContent="center" height="60px">
-                      {getWeatherIcon((forecast as any).weather[0].main, { size: '3em' })}
-                    </Box>
+                    {getWeatherIcon((forecast as any).weather[0].main, { size: '8em' })}
                     <Stack mt="4" spacing="2">
                       <Heading size="sm">{(forecast as any).dt_txt && new Date((forecast as any).dt_txt).toLocaleDateString()}</Heading>
                       <Text>{(forecast as any).weather[0].description}</Text>
                       <Text color="blue.600" fontSize="lg">{(forecast as any).main.temp}°C</Text>
                     </Stack>
+                    <CurrentWeatherCard weatherData={forecast} setCity={setCity} />
                   </CardBody>
                 </Card>
               </Box>
@@ -224,7 +229,7 @@ export default function Home() {
         </Box>
       )}
       <Box mt={8}>
-        <CurrentWeatherCard weatherData={weatherData} setCity={undefined} />
+        <CurrentWeatherCard weatherData={weatherData} setCity={setCity} />
       </Box>
     </Box>
 

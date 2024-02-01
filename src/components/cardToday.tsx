@@ -17,6 +17,13 @@ const getWeatherIcon = (weather: any) => {
   }
 };
 
+const CardToday = ({ any : newWeatherData }) => {
+  // Utilisez les nouvelles données de recherche ici
+  // newWeatherData peut être un objet contenant les informations nécessaires
+  console.log('Nouvelles données de recherche:', newWeatherData);
+};
+
+
 const CurrentWeatherCard = ({ weatherData, setCity }: { weatherData: any, setCity: any }) => {
   if (!weatherData || !weatherData.weather || !weatherData.main || !weatherData.name) {
     return null;
@@ -30,16 +37,16 @@ const CurrentWeatherCard = ({ weatherData, setCity }: { weatherData: any, setCit
   };
 
   return (
-    <Box boxShadow="none" bg="white" border="none" borderRadius="20px" p="20px" textAlign="center">
+    <Box boxShadow="none" bg="white" border="none" borderRadius="20px" p="20px" textAlign="center" onClick={handleSetCity}>
       <Box mb="20px" display="flex" justifyContent="center">
         {getWeatherIcon(weather[0]?.main)}
       </Box>
       <Text mt="10px" fontSize="lg">{date.toLocaleDateString()}</Text>
       <Text mt="10px">{weather[0]?.description}</Text>
       <Text mt="10px">{main.temp}°C</Text>
-      
     </Box>
   );
 };
+
 
 export default CurrentWeatherCard;
