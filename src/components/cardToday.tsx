@@ -17,12 +17,6 @@ const getWeatherIcon = (weather: any) => {
   }
 };
 
-const CardToday = ({ any : newWeatherData }) => {
-  // Utilisez les nouvelles données de recherche ici
-  // newWeatherData peut être un objet contenant les informations nécessaires
-  console.log('Nouvelles données de recherche:', newWeatherData);
-};
-
 
 const CurrentWeatherCard = ({ weatherData, setCity }: { weatherData: any, setCity: any }) => {
   if (!weatherData || !weatherData.weather || !weatherData.main || !weatherData.name) {

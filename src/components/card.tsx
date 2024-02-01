@@ -108,11 +108,6 @@ export default function Home() {
     handleSearch();
   }, []);
 
-  const handleSetCity = (any : newWeatherData) => {
-    setCity(weatherData.name);
-    setWeatherData(weatherData);
-    
-  };
 
   return (
     <Box>
