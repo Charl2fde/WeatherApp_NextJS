@@ -14,7 +14,7 @@ import {
 import { Card, CardBody } from '@chakra-ui/react';
 import CurrentWeatherCard from '../components/cardToday';
 
-const API_KEY = '$API_KEY';
+const API_KEY = '6b1d5ecb1b816eb86b1b035afb017936';
 
 export default function Home() {
   const [city, setCity] = useState('');
